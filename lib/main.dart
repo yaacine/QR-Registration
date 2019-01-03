@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import './scanPage.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,6 +11,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      routes: <String,WidgetBuilder>{
+        "/ScanPage" : (BuildContext context) => new ScanPage(),
+      },
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -33,9 +36,28 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Text(
-          'GDG QR Code Scanner',
-        ),
+        child:new Column(
+          children: <Widget>[
+            new Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0 , vertical: 8.0),
+                child: Text( 'GDG QR Code Scanner', ), 
+            ),
+
+            new Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0 , vertical: 8.0),
+              child: RaisedButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    splashColor: Colors.blueGrey,
+                    onPressed: (){ Navigator.of(context).pushNamed("/ScanPage") ;},
+                    child: new Text("SCAN A QR CODE" , textDirection: TextDirection.ltr)
+                    ,
+                  ),
+            )
+          
+          ],
+        )
+       
       ),
     );
   }
