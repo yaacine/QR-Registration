@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class ScanPage extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class ScanPage extends StatefulWidget {
 class _ScanPageState extends State<ScanPage> {
   String barcode = "";
   String token = "";
+  String checkInMsg = "Checked";
   bool tokenTaken = false;
   // auth
 
@@ -102,11 +104,11 @@ class _ScanPageState extends State<ScanPage> {
     }else{
       try {
         String barcode = await BarcodeScanner.scan();
-        var url = "https://sheets.googleapis.com/v4/spreadsheets/1JuUdv_acv0k6exTI350LrmPmt5GIfWkVNsdwy11tj4E/values/C3:C3?valueInputOption=USER_ENTERED";
+        var url = "https://sheets.googleapis.com/v4/spreadsheets/1JuUdv_acv0k6exTI350LrmPmt5GIfWkVNsdwy11tj4E/values/C"+barcode+":C"+barcode+"?valueInputOption=USER_ENTERED";
         http.put(url, headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           "Authorization": "Bearer "+token
-        }, body: jsonEncode({"values": [[12]]}) ).then((response) {
+        }, body: jsonEncode({"values": [[checkInMsg]]}) ).then((response) {
           print("Response status: ${response.statusCode}");
           print("Response body: ${response.body}");
         });
