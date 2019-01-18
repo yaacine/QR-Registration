@@ -3,8 +3,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'dart:async';
-import 'package:flutter/services.dart';
+import 'dart:io';
+import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class ScanPage extends StatefulWidget {
   @override
@@ -13,20 +15,22 @@ class ScanPage extends StatefulWidget {
 
 class _ScanPageState extends State<ScanPage> {
   String barcode = "";
+  String token = "";
   bool tokenTaken = false;
   // auth
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
-      'email',
-      'https://www.googleapis.com/auth/contacts.readonly',
+      'https://www.googleapis.com/auth/spreadsheets',
     ],
   );
   getToken() {
     _googleSignIn.signIn().then((result) {
       result.authentication.then((googleKey) {
-        tokenTaken = googleKey.accessToken;
+        token = googleKey.accessToken;
         print(googleKey.accessToken);
+
+        setState(() => tokenTaken = true);
         print(_googleSignIn.currentUser.displayName);
       }).catchError((err) {
         print('inner error');
@@ -66,7 +70,7 @@ class _ScanPageState extends State<ScanPage> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Text(
-                    "Got Token ? "+tokenTaken.toString(),
+                    "Got Token ? " + tokenTaken.toString(),
                     textAlign: TextAlign.center,
                   )),
               Padding(
@@ -98,6 +102,14 @@ class _ScanPageState extends State<ScanPage> {
     }else{
       try {
         String barcode = await BarcodeScanner.scan();
+        var url = "https://sheets.googleapis.com/v4/spreadsheets/1JuUdv_acv0k6exTI350LrmPmt5GIfWkVNsdwy11tj4E/values/C3:C3?valueInputOption=USER_ENTERED";
+        http.put(url, headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": "Bearer "+token
+        }, body: jsonEncode({"values": [[12]]}) ).then((response) {
+          print("Response status: ${response.statusCode}");
+          print("Response body: ${response.body}");
+        });
         setState(() => this.barcode = barcode);
       } on FormatException {
         setState(() => this.barcode =
