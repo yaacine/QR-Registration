@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './scanPage.dart';
+import './views/scanPage.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
