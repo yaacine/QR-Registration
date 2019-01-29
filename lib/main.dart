@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './views/scanPage.dart';
+import './views/loginPage.dart';
+import './views/homePage.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -13,6 +15,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: <String,WidgetBuilder>{
         "/ScanPage" : (BuildContext context) => new ScanPage(),
+        "/LoginPage" : (BuildContext context) => new LoginPage(),
+        "/HomePage" : (BuildContext context) => new HomePage(),
       },
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
