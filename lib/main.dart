@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import './views/scanPage.dart';
 import './views/loginPage.dart';
 import './views/homePage.dart';
+import './views/listFilesPage.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -9,16 +11,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: new ThemeData(primaryColor: Color.fromRGBO(58, 66, 86, 1.0)),
       routes: <String,WidgetBuilder>{
         "/ScanPage" : (BuildContext context) => new ScanPage(),
         "/LoginPage" : (BuildContext context) => new LoginPage(),
         "/HomePage" : (BuildContext context) => new HomePage(),
       },
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: ListFilesPage(title: "Choose a file"),
+      
     );
   }
 }
