@@ -21,34 +21,53 @@ class _ScanPageState extends State<ScanPage> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: new AppBar(
-          title: new Text('QR Code Scanner'),
-        ),
-        body: new Center(
+
+
+    final scanAppBar =AppBar(
+          title: new Text('Scan'),
+          elevation: 1.1,
+          backgroundColor: Color.fromRGBO(78, 76, 106, 1.0), // best color until now
+    );
+
+
+    final scanBody = Center(
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: RaisedButton(
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    splashColor: Colors.blueGrey,
+                
+                SizedBox(
+                  width: 150.0,
+                  height: 150.0,
+                 child: FloatingActionButton(
+                    elevation: 8.0,
+                    backgroundColor: Color.fromRGBO(243, 177, 11, 0.8),
                     onPressed: scan,
-                    child: const Text('START CAMERA SCAN')
-                ),
-              )
-              ,
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Text(barcode, textAlign: TextAlign.center,),
-              )
-              ,
+                    child:
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child:  Column(
+                      children: <Widget>[
+                        Icon(Icons.photo_camera    , size: 75.0,),
+                        SizedBox(height: 1.0,),
+                        Text('START SCAN' , style: TextStyle(color: Colors.white , fontSize: 20.0),)
+
+                      ],
+                    ) ,
+                    )
+                   ),                  
+                )
+             
+             
             ],
           ),
-        ));
+        );
+    return Scaffold(
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+        appBar: scanAppBar,
+        body: scanBody,
+        
+        );
   }
 
 

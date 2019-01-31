@@ -19,7 +19,9 @@ class MyApp extends StatelessWidget {
         "/LoginPage" : (BuildContext context) => new LoginPage(),
         "/HomePage" : (BuildContext context) => new HomePage(),
       },
-      home: ListFilesPage(title: "Choose a file"),
+      
+      //home: ListFilesPage(title: "Choose a file"),
+      home: ScanPage(),
       
     );
   }

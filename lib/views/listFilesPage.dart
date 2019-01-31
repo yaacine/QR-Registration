@@ -27,7 +27,7 @@ class _ListFilesPageState extends State<ListFilesPage> {
     final String title="";
     final topAppBAr = AppBar(
       elevation: 0.1,
-      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      backgroundColor: Color.fromRGBO(78, 76, 106, 1.0),
       title: Text(widget.title),
       actions: <Widget>[
         IconButton(
