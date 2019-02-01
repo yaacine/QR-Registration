@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'Sheet.dart';
-
+import 'package:flutter/services.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -40,12 +40,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String token = "";
   bool tokenTaken = false;
   bool isLoading = false;
-  GoogleSignIn _googleSignIn = GoogleSignIn(
+  GoogleSignIn _googleSignIn = new GoogleSignIn(
     scopes: [
-      'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/drive',
-      'https://www.googleapis.com/auth/drive.file',
-      'https://www.googleapis.com/auth/drive.appdata'
+      'email',
     ],
   );
 
@@ -73,14 +70,23 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+      print("==============> gggggg");
+    } catch (error) {
+      print("==============> Error");
+      print(error);
+    }
+  }
   getToken() {
     _googleSignIn.signIn().then((result) {
       result.authentication.then((googleKey) {
-        token = googleKey.accessToken;
+        //token = googleKey.accessToken;
         print(googleKey.accessToken);
         setState(() => tokenTaken = true);
         print(_googleSignIn.currentUser.displayName);
-        _fetchData();
+        //_fetchData();
       }).catchError((err) {
         print('inner error');
       });
@@ -94,6 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return parsed['files'].map<Sheet>((json) => Sheet.fromJson(json)).toList();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,12 +110,23 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
           child: new Column(
         children: <Widget>[
-          new Padding(
+
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Text(
-              'GDG QR Code Scanner',
-            ),
+            child: RaisedButton(
+                color: Colors.blue,
+                textColor: Colors.white,
+                splashColor: Colors.blueGrey,
+                onPressed: _handleSignIn,
+                child: const Text('Get Google Token')),
           ),
+          Padding(
+              padding:
+              EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(
+                "Got Token ? " + tokenTaken.toString(),
+                textAlign: TextAlign.center,
+              )),
           new Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: RaisedButton(
@@ -119,19 +137,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.of(context).pushNamed("/ScanPage");
               },
               child:
-                  new Text("SCAN A QR CODE", textDirection: TextDirection.ltr),
+                  new Text("Go to scan screen", textDirection: TextDirection.ltr),
             ),
           ),
-          ListView.builder(
-            itemCount: 5,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.shopping_cart),
-                  title: Text('product $index'),
-                  subtitle: Text('price: } USD'),
-                );
-              }
-          ),
+          new Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.all(8.0),
+              itemExtent: 20.0,
+              itemBuilder: (BuildContext context, int index) {
+                return Text('entry $index');
+              },
+            ),
+          )
         ],
       )),
     );

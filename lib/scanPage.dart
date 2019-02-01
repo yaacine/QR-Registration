@@ -68,22 +68,6 @@ class _ScanPageState extends State<ScanPage> {
                     color: Colors.blue,
                     textColor: Colors.white,
                     splashColor: Colors.blueGrey,
-                    onPressed: getToken,
-                    child: const Text('Get Google Token')),
-              ),
-              Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    "Got Token ? " + tokenTaken.toString(),
-                    textAlign: TextAlign.center,
-                  )),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: RaisedButton(
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    splashColor: Colors.blueGrey,
                     onPressed: scan,
                     child: const Text('START CAMERA SCAN')),
               ),
