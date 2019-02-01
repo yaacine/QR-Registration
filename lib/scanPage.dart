@@ -10,17 +10,22 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
 class ScanPage extends StatefulWidget {
+  final String token;
+
+  const ScanPage({Key key, this.token}) : super(key: key);
+
   @override
-  _ScanPageState createState() => _ScanPageState();
+  _ScanPageState createState() => _ScanPageState(token: token);
 }
 
 class _ScanPageState extends State<ScanPage> {
   String barcode = "";
-  String token = "";
   String checkInMsg = "Checked";
-  bool tokenTaken = false;
+  bool tokenTaken = true;
+  final String token;
   // auth
 
+   _ScanPageState({Key key, this.token});
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
       'https://www.googleapis.com/auth/spreadsheets',
@@ -29,22 +34,7 @@ class _ScanPageState extends State<ScanPage> {
       'https://www.googleapis.com/auth/drive.appdata'
     ],
   );
-  getToken() {
-    _googleSignIn.signIn().then((result) {
-      result.authentication.then((googleKey) {
-        token = googleKey.accessToken;
-        print(googleKey.accessToken);
-
-        setState(() => tokenTaken = true);
-        print(_googleSignIn.currentUser.displayName);
-      }).catchError((err) {
-        print('inner error');
-      });
-    }).catchError((err) {
-      print('error occured');
-    });
-  }
-
+  
   @override
   void initState() {
     // TODO: implement initState
