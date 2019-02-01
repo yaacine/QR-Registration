@@ -37,12 +37,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Sheet> sheets = [];
-  String token = "";
+  String token = "ya29.GlujBtbh6qLdMemIw6LaJtR-whdPHDPfEcNjXFUycOoN8vatFEKve0Ckx4nBAJsKADgrxHDCOFYCVTZF5y20KduhZiyJJYFKb-hfe1ikGDbybuqRzzyVlyZ7PlWv"; // testToken
   bool tokenTaken = false;
   bool isLoading = false;
   GoogleSignIn _googleSignIn = new GoogleSignIn(
     scopes: [
-      'email',
+      'https://www.googleapis.com/auth/spreadsheets',
+      'https://www.googleapis.com/auth/drive',
+      'https://www.googleapis.com/auth/drive.file',
     ],
   );
 
@@ -51,42 +53,41 @@ class _MyHomePageState extends State<MyHomePage> {
       isLoading = true;
     });
     final response = await http.get(
-        "https://www.googleapis.com/drive/v3/files?mimeType=application/vnd.google-apps.spreadsheet",
+        "https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=modifiedTime desc&q=mimeType = \"application/vnd.google-apps.spreadsheet\"",
         headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.acceptHeader: "application/json",
           "Authorization": "Bearer " + token
         });
     if (response.statusCode == 200) {
-      print(">>------------------------------");
+      print(">---------------------- RESPONSE ---------------------");
       print(response.body);
-      final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
-      print(parsed);
+      print(">---------------------- END RESPONSE ---------------------");
       setState(() {
         isLoading = false;
       });
       return parseFiles(response.body);
     } else {
-      throw Exception('Failed to load photos');
+      throw Exception('Failed to load files');
     }
   }
 
-  Future<void> _handleSignIn() async {
-    try {
-      await _googleSignIn.signIn();
-      print("==============> gggggg");
-    } catch (error) {
-      print("==============> Error");
-      print(error);
-    }
-  }
   getToken() {
     _googleSignIn.signIn().then((result) {
       result.authentication.then((googleKey) {
         //token = googleKey.accessToken;
         print(googleKey.accessToken);
         setState(() => tokenTaken = true);
+        setState(() {
+          token = googleKey.accessToken;
+        });
         print(_googleSignIn.currentUser.displayName);
-        //_fetchData();
+        _fetchData().then( (res) {
+            print(">---------------------- THEN ---------------------");
+            setState(() {
+              sheets = res;
+            });
+        });
+
       }).catchError((err) {
         print('inner error');
       });
@@ -96,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Sheet> parseFiles(String responseBody) {
-    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    Map<String, dynamic> parsed = jsonDecode(responseBody);
 
     return parsed['files'].map<Sheet>((json) => Sheet.fromJson(json)).toList();
   }
@@ -117,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.blue,
                 textColor: Colors.white,
                 splashColor: Colors.blueGrey,
-                onPressed: _handleSignIn,
+                onPressed: getToken,
                 child: const Text('Get Google Token')),
           ),
           Padding(
@@ -143,9 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
           new Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(8.0),
-              itemExtent: 20.0,
+              itemCount: sheets.length,
               itemBuilder: (BuildContext context, int index) {
-                return Text('entry $index');
+                return Text(sheets[index].name);
               },
             ),
           )
