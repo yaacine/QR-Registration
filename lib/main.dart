@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import './scanPage.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'Sheet.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,8 +18,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      routes: <String,WidgetBuilder>{
-        "/ScanPage" : (BuildContext context) => new ScanPage(),
+      routes: <String, WidgetBuilder>{
+        "/ScanPage": (BuildContext context) => new ScanPage(),
       },
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -29,6 +36,64 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<Sheet> sheets = [];
+  String token = "";
+  bool tokenTaken = false;
+  bool isLoading = false;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'https://www.googleapis.com/auth/spreadsheets',
+      'https://www.googleapis.com/auth/drive',
+      'https://www.googleapis.com/auth/drive.file',
+      'https://www.googleapis.com/auth/drive.appdata'
+    ],
+  );
+
+  Future<List<Sheet>> _fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+    final response = await http.get(
+        "https://www.googleapis.com/drive/v3/files?mimeType=application/vnd.google-apps.spreadsheet",
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": "Bearer " + token
+        });
+    if (response.statusCode == 200) {
+      print(">>------------------------------");
+      print(response.body);
+      final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
+      print(parsed);
+      setState(() {
+        isLoading = false;
+      });
+      return parseFiles(response.body);
+    } else {
+      throw Exception('Failed to load photos');
+    }
+  }
+
+  getToken() {
+    _googleSignIn.signIn().then((result) {
+      result.authentication.then((googleKey) {
+        token = googleKey.accessToken;
+        print(googleKey.accessToken);
+        setState(() => tokenTaken = true);
+        print(_googleSignIn.currentUser.displayName);
+        _fetchData();
+      }).catchError((err) {
+        print('inner error');
+      });
+    }).catchError((err) {
+      print('error occured');
+    });
+  }
+
+  List<Sheet> parseFiles(String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed['files'].map<Sheet>((json) => Sheet.fromJson(json)).toList();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,29 +101,39 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child:new Column(
-          children: <Widget>[
-            new Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0 , vertical: 8.0),
-                child: Text( 'GDG QR Code Scanner', ), 
+          child: new Column(
+        children: <Widget>[
+          new Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Text(
+              'GDG QR Code Scanner',
             ),
-
-            new Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0 , vertical: 8.0),
-              child: RaisedButton(
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    splashColor: Colors.blueGrey,
-                    onPressed: (){ Navigator.of(context).pushNamed("/ScanPage") ;},
-                    child: new Text("SCAN A QR CODE" , textDirection: TextDirection.ltr)
-                    ,
-                  ),
-            )
-          
-          ],
-        )
-       
-      ),
+          ),
+          new Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: RaisedButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              splashColor: Colors.blueGrey,
+              onPressed: () {
+                Navigator.of(context).pushNamed("/ScanPage");
+              },
+              child:
+                  new Text("SCAN A QR CODE", textDirection: TextDirection.ltr),
+            ),
+          ),
+          ListView.builder(
+            itemCount: 5,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Icon(Icons.shopping_cart),
+                  title: Text('product $index'),
+                  subtitle: Text('price: } USD'),
+                );
+              }
+          ),
+        ],
+      )),
     );
   }
 }
