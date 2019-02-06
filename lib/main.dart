@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       },
       
       //home: ListFilesPage(title: "Choose a file"),
-      home: ScanPage(),
+      home: LoginPage(),
       
     );
   }

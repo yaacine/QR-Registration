@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../controllers/listFilesController.dart';
-
+import '../models/sheet.dart';
 
 
 class ListFilesPage extends StatefulWidget {
@@ -41,7 +41,7 @@ class _ListFilesPageState extends State<ListFilesPage> {
 
     
     
-    final makeListTile =ListTile(
+    ListTile makeListTile(Sheet sheet1) =>ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       leading: Container(
         padding: EdgeInsets.only(right: 12.0),
@@ -77,7 +77,7 @@ class _ListFilesPageState extends State<ListFilesPage> {
         decoration: BoxDecoration(
           color: Color.fromRGBO(64, 75, 96, .9)
         ),
-        child: makeListTile,
+       // child: makeListTile,
       ),
     );
 

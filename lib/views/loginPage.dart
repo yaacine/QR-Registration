@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../controllers/loginController.dart';
-
-
+import '../controllers/participentsSheetController.dart';
+/**
+ * this page is for google login
+ */
 class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
@@ -10,7 +12,59 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
 
+    final loginButton = new Padding(
+      padding:EdgeInsets.symmetric(vertical: 8.0 ,horizontal: 16.0),
+      child: RaisedButton(
+        
+        color: Colors.blue,
+        textColor: Colors.white,
+        splashColor: Colors.blueGrey,
+        onPressed: SheetsManager.getToken ,
+        child: Padding(
+          padding:EdgeInsets.symmetric(vertical: 18.0 ,horizontal: 16.0),
+          child: Row(children: <Widget>[
+          Icon(Icons.lightbulb_outline), // google icon here
+          Text("Login with Google")
+        ],)
+        )
 
+        
+    )
+    );
+
+    final topAppBAr = AppBar(
+      elevation: 0.1,
+      backgroundColor: Color.fromRGBO(78, 76, 106, 1.0),
+      title: Text("Login"),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.help),
+          onPressed: (){},
+        )
+      ],
+
+    );
+
+
+    final makeBody = Center(
+      child: loginButton,
+    );
+    return Scaffold(
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      appBar: topAppBAr,
+      body: makeBody,
+      
+    );
+
+  }
+}
+
+
+
+
+/*
+
+  
 
     final logo = Hero(
       tag : 'hero',
@@ -98,5 +152,4 @@ class _LoginPageState extends State<LoginPage> {
          )
        ),
     );
-  }
-}
+*/
