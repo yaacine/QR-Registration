@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../controllers/loginController.dart';
 import '../controllers/participentsSheetController.dart';
+import './listFilesPage.dart';
+import '../controllers/participentsSheetController.dart';
 /**
  * this page is for google login
  */
@@ -19,7 +21,16 @@ class _LoginPageState extends State<LoginPage> {
         color: Colors.blue,
         textColor: Colors.white,
         splashColor: Colors.blueGrey,
-        onPressed: SheetsManager.getToken ,
+        onPressed:(){
+          
+          SheetsManager.getToken() ;
+          while(SheetsManager.isLoading==true){} // wait for json response
+          SheetsManager.isLoading= false;
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context)=> ListFilesPage( files:SheetsManager.sheets)
+          ));
+
+        } ,
         child: Padding(
           padding:EdgeInsets.symmetric(vertical: 18.0 ,horizontal: 16.0),
           child: Row(children: <Widget>[
