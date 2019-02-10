@@ -19,6 +19,7 @@ abstract class SheetsManager{
   static final String defaultUrl =
       "https://b.thumbs.redditmedia.com/S6FTc5IJqEbgR3rTXD5boslU49bEYpLWOlh8-CMyjTY.png";
 
+  
  static  GoogleSignIn _googleSignIn = new GoogleSignIn(
     scopes: [
       'https://www.googleapis.com/auth/spreadsheets',
@@ -27,6 +28,7 @@ abstract class SheetsManager{
       'https://www.googleapis.com/auth/drive.appdata'
     ],
   );
+  
 
  // message to write in the participent's cell
  // recomended actual time and date
@@ -37,9 +39,6 @@ abstract class SheetsManager{
     Map<String, dynamic> parsed = jsonDecode(responseBody);
     return parsed['files'].map<Sheet>((json) => Sheet.fromJson(json)).toList();
   }
-
-
-
 
   static Future<List<Sheet>> _fetchData() async {
     isLoading = true;
@@ -63,6 +62,7 @@ abstract class SheetsManager{
 
  static  getToken() {
    print("#########################   1");
+
     _googleSignIn.signIn().then((result) {
       result.authentication.then((googleKey) {
         //token = googleKey.accessToken;

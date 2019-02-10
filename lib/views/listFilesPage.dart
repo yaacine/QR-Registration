@@ -51,7 +51,7 @@ class _ListFilesPageState extends State<ListFilesPage> {
             right: BorderSide(width: 1.0, color: Colors.white24),
           )
         ),
-        child: Icon(Icons.autorenew, color: Colors.white),
+        child: Image.asset("assets/sheets.png")
       ),
 
       title: Text(
