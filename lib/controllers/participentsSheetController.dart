@@ -20,7 +20,7 @@ abstract class SheetsManager{
       "https://b.thumbs.redditmedia.com/S6FTc5IJqEbgR3rTXD5boslU49bEYpLWOlh8-CMyjTY.png";
 
   
- static  GoogleSignIn _googleSignIn = new GoogleSignIn(
+ static  GoogleSignIn googleSignIn = new GoogleSignIn(
     scopes: [
       'https://www.googleapis.com/auth/spreadsheets',
       'https://www.googleapis.com/auth/drive',
@@ -35,7 +35,7 @@ abstract class SheetsManager{
   static String checkInMsg = "Checked";
   static String sheetId=""; 
 
- static  List<Sheet> parseFiles(String responseBody) {
+ static Future<List<Sheet>> parseFiles(String responseBody)  async{
     Map<String, dynamic> parsed = jsonDecode(responseBody);
     return parsed['files'].map<Sheet>((json) => Sheet.fromJson(json)).toList();
   }
@@ -52,31 +52,33 @@ abstract class SheetsManager{
       print(">---------------------- RESPONSE ---------------------");
       print(response.body);
       print(">---------------------- END RESPONSE ---------------------");
+      
+      var resp = await parseFiles(response.body);
       isLoading = false;
-      return parseFiles(response.body);
+      return resp;
     } else {
       throw Exception('Failed to load files');
     }
   }
 
 
- static  getToken() {
-   print("#########################   1");
-
-    _googleSignIn.signIn().then((result) {
+ static Future<bool> getToken() async {
+    
+    googleSignIn.signIn().then((result) {
       result.authentication.then((googleKey) {
         //token = googleKey.accessToken;
         print(googleKey.accessToken);
          tokenTaken = true;
          token = googleKey.accessToken;
-        print(_googleSignIn.currentUser.displayName);
-        _fetchData().then((res) {
+        print(googleSignIn.currentUser.displayName);
+         _fetchData().then((res) {
           print(">---------------------- THEN ---------------------");
            sheets = res; 
            return res;
         });
       }).catchError((err) {
         print('inner error');
+        print(err.toString());
       });
     }).catchError((err) {
       print('error occured');
@@ -84,6 +86,9 @@ abstract class SheetsManager{
     });
   }
 
+ static void testVoid() async{
+    getToken();
+ }
 
  static bool setParticipantPresent(String barcode){
      var url = "https://sheets.googleapis.com/v4/spreadsheets/"+sheetId+"/values/C"+barcode+":C"+barcode+"?valueInputOption=USER_ENTERED";
@@ -95,5 +100,9 @@ abstract class SheetsManager{
           print("Response body: ${response.body}");
         });
   }
+
+
+
+   
 
 }

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../controllers/participentsSheetController.dart';
 import '../models/sheet.dart';
 import './scanPage.dart';
-
+import './globalCompounents.dart';
 
 class ListFilesPage extends StatefulWidget {
 
@@ -15,30 +15,18 @@ class ListFilesPage extends StatefulWidget {
 }
 
 class _ListFilesPageState extends State<ListFilesPage> {
-  List filesList;
+ 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //this.filesList = getFilesList();
+    
   }
   @override
   Widget build(BuildContext context) {
     final String title="";
-    final topAppBAr = AppBar(
-      elevation: 0.1,
-      backgroundColor: Color.fromRGBO(78, 76, 106, 1.0),
-      title: Text("CHOOSE A FILE"),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.list),
-          onPressed: (){},
-        )
-      ],
 
-
-    );
-
+    
     
     
     ListTile makeListTile(Sheet sheet1) =>ListTile(
@@ -102,7 +90,7 @@ class _ListFilesPageState extends State<ListFilesPage> {
     
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      appBar: topAppBAr,
+      appBar: generalAppbar(context, "My Spreadsheets"),
       body: makeBody,
       /*appBar: AppBar(title: new Text("CHOOSE FILE" , textDirection: TextDirection.ltr)
       ,),

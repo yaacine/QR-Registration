@@ -3,6 +3,7 @@ import './views/scanPage.dart';
 import './views/loginPage.dart';
 import './views/homePage.dart';
 import './views/listFilesPage.dart';
+import './views/importFiles.dart';
 
 void main() => runApp(MyApp());
 

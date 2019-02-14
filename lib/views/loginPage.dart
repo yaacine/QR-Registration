@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import '../controllers/loginController.dart';
 import '../controllers/participentsSheetController.dart';
 import './listFilesPage.dart';
+import './importFiles.dart';
 import '../controllers/participentsSheetController.dart';
+import 'dart:async';
+
 /**
  * this page is for google login
  */
@@ -14,47 +17,55 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
 
-    final loginButton = new Padding(
-      padding:EdgeInsets.symmetric(vertical: 8.0 ,horizontal: 16.0),
-      child: RaisedButton(
-        
-        color: Colors.blue,
-        textColor: Colors.white,
-        splashColor: Colors.blueGrey,
-        onPressed:(){
-          SheetsManager.getToken() ;
-          while(SheetsManager.isLoading==true){} // wait for json response
-          SheetsManager.isLoading= false;
-          // load impôrtfils page here 
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context)=> ListFilesPage( files:SheetsManager.sheets)
-          ));
+    final loginButton = Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
 
-        } ,
-        child: Padding(
-          padding:EdgeInsets.symmetric(vertical: 18.0 ,horizontal: 16.0),
-          child: Row(children: <Widget>[
-          Icon(Icons.lightbulb_outline), // google icon here
-          Text("Login with Google")
-        ],)
-        )
+            Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Icon(Icons.supervisor_account , color: Colors.white, size: 200,)
+          ),
+
+          Padding(
+              padding:EdgeInsets.symmetric(vertical: 8.0 ,horizontal: 16.0),
+              child: RaisedButton(
+                  elevation: 8.0,
+                  color: Color.fromRGBO(243, 177, 11, 0.8),
+                  textColor: Colors.white,
+                  splashColor: Colors.blueGrey,
+                  onPressed:(){
+                   
+                    SheetsManager.getToken().then((value) {
+                       Navigator.pushReplacement(context, MaterialPageRoute(
+                      builder: (context)=> ImportFilesPage()
+                    ));
+                    }) ;
+
+                    // wait for json response
+                  // SheetsManager.isLoading= false;
+                    // load importfils page here 
+                     
+
+                  } ,
+                  child: Padding(
+                    padding:EdgeInsets.symmetric(vertical: 10.0 ,horizontal: 0.0),
+                    child: Row(children: <Widget>[
+                    Image.asset("assets/google.png", height: 50, width:80), // google icon here
+                    Text("Login with Google", style: TextStyle(fontSize: 25.0),)
+                  ],)
+                  )
+   
+              )
+          ),
 
         
-    )
+        ],
+      ),
     );
 
-    final topAppBAr = AppBar(
-      elevation: 0.1,
-      backgroundColor: Color.fromRGBO(78, 76, 106, 1.0),
-      title: Text("Login"),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.help),
-          onPressed: (){},
-        )
-      ],
-
-    );
+   
 
 
     final makeBody = Center(
@@ -62,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
     );
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      appBar: topAppBAr,
+      
       body: makeBody,
       
     );
