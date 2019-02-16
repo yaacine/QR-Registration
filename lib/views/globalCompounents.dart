@@ -3,23 +3,49 @@ import '../controllers/participentsSheetController.dart';
 import 'loginPage.dart';
 
 
+
  AppBar generalAppbar(BuildContext context ,String title) => AppBar(
       leading: null,
       title: Center(child: Text(title),),
       actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.account_circle),
-          onPressed: (){
-             // show  disconnect( logout ) menu here
-             SheetsManager.googleSignIn.signOut();
-             SheetsManager.sheets=null;
-             Navigator.pushReplacement(context, MaterialPageRoute(
-               builder: (context)=> LoginPage()
-             )
-             );
-            
+        PopupMenuButton(
+          onSelected: (_){SheetsManager.googleSignIn.signOut();},
+          itemBuilder: (BuildContext context){
+            return[
+              PopupMenuItem(
+                
+               child:Row(children: <Widget>[
+                 Text("Log out"),
+                 Icon(Icons.account_circle),
+               ],)
+               )
+
+             
+            ];
           },
         )
         
+        
       ],
     );
+
+
+
+
+
+  // connexion dialog 
+  AlertDialog checkConnexionDialog(BuildContext context) =>AlertDialog(
+      title: const Text("Connexion Error !" , textDirection: TextDirection.ltr),
+      content: Text('Check your internet connexion and try again .'),
+      actions: <Widget>[
+        FlatButton(
+          child:Text("OK"),
+          onPressed: (){
+            Navigator.pop(context ,'OK');
+          },
+          )
+      ],
+      );
+
+
+ 

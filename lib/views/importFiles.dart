@@ -60,7 +60,7 @@ class _ImportFilesPageState extends State<ImportFilesPage> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Icon(Icons.cloud_download , size: 200.0,color: Colors.white,) ,
+              child: Icon(Icons.file_download , size: 180.0,color: Colors.white,) ,
             ),
 
              Padding(
@@ -83,10 +83,11 @@ class _ImportFilesPageState extends State<ImportFilesPage> {
                     },
                     child:
                     Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child:  Column(
-                      children: <Widget>[
-                        Text('IMPORT SPREADSHEETS' , style: TextStyle(color: Colors.white , fontSize: 20.0),)
+                      padding: EdgeInsets.all(10.0),                      
+                      child:  Column(   
+                      children: <Widget>[   
+
+                        Text('Import shared sheets' , style: TextStyle(color: Colors.white , fontSize: 20.0),)
 
                       ],
                     ) ,

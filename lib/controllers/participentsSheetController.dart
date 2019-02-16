@@ -7,6 +7,12 @@ import 'package:http/http.dart' as http;
 import '../models/sheet.dart';
 import '../views/listFilesPage.dart';
 
+import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'dart:async';
+import 'package:flutter/services.dart';
+
 
 
 abstract class SheetsManager{
@@ -32,7 +38,7 @@ abstract class SheetsManager{
 
  // message to write in the participent's cell
  // recomended actual time and date
-  static String checkInMsg = "Checked";
+  
   static String sheetId=""; 
 
  static Future<List<Sheet>> parseFiles(String responseBody)  async{
@@ -49,10 +55,7 @@ abstract class SheetsManager{
           "Authorization": "Bearer " + token
         });
     if (response.statusCode == 200) {
-      print(">---------------------- RESPONSE ---------------------");
-      print(response.body);
-      print(">---------------------- END RESPONSE ---------------------");
-      
+     
       var resp = await parseFiles(response.body);
       isLoading = false;
       return resp;
@@ -64,25 +67,23 @@ abstract class SheetsManager{
 
  static Future<bool> getToken() async {
     
-    googleSignIn.signIn().then((result) {
-      result.authentication.then((googleKey) {
+    await googleSignIn.signIn().then((result) async{
+      await result.authentication.then((googleKey) async {
         //token = googleKey.accessToken;
-        print(googleKey.accessToken);
+        
          tokenTaken = true;
          token = googleKey.accessToken;
-        print(googleSignIn.currentUser.displayName);
-         _fetchData().then((res) {
-          print(">---------------------- THEN ---------------------");
+       
+        await  _fetchData().then((res) {
+          
            sheets = res; 
            return res;
         });
       }).catchError((err) {
-        print('inner error');
-        print(err.toString());
+        throw(err);
       });
     }).catchError((err) {
-      print('error occured');
-      print(err.toString());
+     throw(err);
     });
   }
 
@@ -90,19 +91,68 @@ abstract class SheetsManager{
     getToken();
  }
 
- static bool setParticipantPresent(String barcode){
+ static Future<bool> setParticipantPresent(String barcode) async{
+    var result2=false;
+    var dateNow = DateTime.now();
+     String checkInMsg = "Checked at " +dateNow.toString();
      var url = "https://sheets.googleapis.com/v4/spreadsheets/"+sheetId+"/values/C"+barcode+":C"+barcode+"?valueInputOption=USER_ENTERED";
-        http.put(url, headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-          "Authorization": "Bearer "+token
-        }, body: jsonEncode({"values/D": [[checkInMsg]]}) ).then((response) {
-          print("Response status: ${response.statusCode}");
-          print("Response body: ${response.body}");
-        });
+       
+       try{
+          await http.put(
+            url, 
+            headers: {
+              HttpHeaders.contentTypeHeader: "application/json",
+              "Authorization": "Bearer "+token
+            },
+            body:await jsonEncode({"values": [[checkInMsg]]}) ).then((response) {
+              if(response.statusCode==200){
+                result2= true;
+              }
+              else{
+                result2= false; 
+              }
+              
+            }
+            );
+       } on Exception catch(e){
+         result2= false;
+       }
+       return result2;
+       
   }
 
-
-
+   
    
 
-}
+static Future<String> scan() async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      
+      if(barcode!= null){
+        bool s = await SheetsManager.setParticipantPresent(barcode);
+        if(s==true){
+          return '0'; // success
+        }
+        else{
+          return '3';  // connexion error
+        }
+        
+
+      }
+     
+    } on FormatException{
+     
+    }  on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        return '1'; // camera permission error
+      } else {
+        return '2'; // general erroe
+      }
+    }
+    catch (e) {
+       return '2'; // general error
+    }
+  }
+   
+
+}// class end

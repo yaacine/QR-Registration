@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../controllers/loginController.dart';
 import '../controllers/participentsSheetController.dart';
+import '../controllers/networkManager.dart';
 import './listFilesPage.dart';
+import './globalCompounents.dart';
 import './importFiles.dart';
-import '../controllers/participentsSheetController.dart';
 import 'dart:async';
 
 /**
@@ -35,19 +36,26 @@ class _LoginPageState extends State<LoginPage> {
                   color: Color.fromRGBO(243, 177, 11, 0.8),
                   textColor: Colors.white,
                   splashColor: Colors.blueGrey,
-                  onPressed:(){
-                   
-                    SheetsManager.getToken().then((value) {
+                  onPressed:() async{
+
+                    //test connaxion then login
+                    bool onValue= await NetworkManager.tryConnexion();
+                    print(onValue);
+                        
+                      if(onValue ){
+                        
+                       await SheetsManager.getToken();
                        Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context)=> ImportFilesPage()
                     ));
-                    }) ;
-
-                    // wait for json response
-                  // SheetsManager.isLoading= false;
-                    // load importfils page here 
-                     
-
+                    }else { 
+                      // no  intenet connexion
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => checkConnexionDialog(context)
+                      ); 
+                    }
+         
                   } ,
                   child: Padding(
                     padding:EdgeInsets.symmetric(vertical: 10.0 ,horizontal: 0.0),

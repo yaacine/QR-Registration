@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'dart:async';
-import 'package:flutter/services.dart';
+import './globalCompounents.dart';
 import '../controllers/participentsSheetController.dart';
+
 
 class ScanPage extends StatefulWidget {
   @override
@@ -20,18 +17,64 @@ class _ScanPageState extends State<ScanPage> {
       super.initState();
     }
   
+
+
+    
   @override
   Widget build(BuildContext context) {
-
-
-    final scanAppBar =AppBar(
-          title: new Text('Scan'),
-          elevation: 1.1,
-          backgroundColor: Color.fromRGBO(78, 76, 106, 1.0), // best color until now
+    
+     void showCheckedToast(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Checked successfully'),
+        action: SnackBarAction(
+            label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
+  }
+
+  void showErrorToast(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Error! try again'),
+        action: SnackBarAction(
+            label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
+
+  void showConnexionErrorToast(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Connexion Error!'),
+        action: SnackBarAction(
+            label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
+
+  void showPermissionsErrorToast(BuildContext context) {
+   
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Error ! make sure you grant camera permissions '),
+        action: SnackBarAction(
+            label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
 
 
-    final scanBody = Center(
+
+// compounents
+  
+
+
+Center scanBody (BuildContext context) => Center(
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,7 +86,28 @@ class _ScanPageState extends State<ScanPage> {
                  child: FloatingActionButton(
                     elevation: 8.0,
                     backgroundColor: Color.fromRGBO(243, 177, 11, 0.8),
-                    onPressed: scan,
+                    onPressed:()async{
+                      
+                      // keep sacnning until the user clicks on back button
+                      String result = await SheetsManager.scan();   
+                      switch (result) {
+                        case '0' : 
+                            showCheckedToast(context);
+                          break;
+                        case '1' : 
+                            showPermissionsErrorToast(context);
+                          break;
+                        case '2' : 
+                            showErrorToast(context);
+                          break;
+                        
+                         case '3' : 
+                            showConnexionErrorToast(context);
+                          break;
+                    
+                        default:
+                      }                   
+                    } ,
                     child:
                     Padding(
                       padding: EdgeInsets.all(10.0),
@@ -63,38 +127,17 @@ class _ScanPageState extends State<ScanPage> {
             ],
           ),
         );
+ 
+ 
     return Scaffold(
         backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-        appBar: scanAppBar,
-        body: scanBody,
+        appBar: generalAppbar(context,'Scan'),
+        body: Builder(
+          builder: (context)=>  scanBody(context),
+        ),
+         
         
         );
-  }
-
-
-Future scan() async {
-    try {
-      String barcode = await BarcodeScanner.scan();
-      if(barcode!= null){
-         setState(() => this.barcode = barcode);
-         SheetsManager.setParticipantPresent(barcode);
-      }
-     
-    } on FormatException{
-      setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
-    }  on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() {
-          this.barcode = 'The user did not grant the camera permission!'; 
-        });
-        
-      } else {
-        setState(() => this.barcode = 'Unknown error: $e');
-      }
-    }
-    catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
-    }
   }
 
 }
