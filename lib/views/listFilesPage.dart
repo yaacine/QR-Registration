@@ -58,7 +58,6 @@ class _ListFilesPageState extends State<ListFilesPage> {
             Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: (){
         SheetsManager.sheetId = sheet1.id.toString() ;
-        print("================"+SheetsManager.sheetId+ " \n\n");
         Navigator.push(context, MaterialPageRoute(
           builder:(context) => ScanPage()
         ));
@@ -90,22 +89,8 @@ class _ListFilesPageState extends State<ListFilesPage> {
     
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      appBar: generalAppbar(context, "My Spreadsheets"),
+      appBar: generalAppbar(context, "My Sheets"),
       body: makeBody,
-      /*appBar: AppBar(title: new Text("CHOOSE FILE" , textDirection: TextDirection.ltr)
-      ,),
-      body: ListView.builder(
-        itemCount: 10,  // modify the item count
-        itemBuilder: (BuildContext context , int index){
-          return Card(
-            child: Row(
-              children: <Widget>[
-
-              ],
-            ),
-          );
-        },
-      ),*/
     );
   }
 }

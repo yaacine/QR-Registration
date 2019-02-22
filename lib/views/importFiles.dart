@@ -53,22 +53,20 @@ class _ImportFilesPageState extends State<ImportFilesPage> {
 
     final loadFilesButton = Container(
       child: Center(
-        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
               child: Icon(Icons.file_download , size: 180.0,color: Colors.white,) ,
             ),
-
-             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+           
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               child:  RaisedButton(
                     elevation: 8.0,
                     color: Color.fromRGBO(243, 177, 11, 0.8),
-                    //backgroundColor: Color.fromRGBO(243, 177, 11, 0.8),
                     onPressed: (){
                       // load listFilesPage here
                       if(SheetsManager.sheets==null || SheetsManager.sheets.length==0){
@@ -81,17 +79,14 @@ class _ImportFilesPageState extends State<ImportFilesPage> {
                       }
                       
                     },
-                    child:
-                    Padding(
-                      padding: EdgeInsets.all(10.0),                      
-                      child:  Column(   
-                      children: <Widget>[   
-
-                        Text('Import shared sheets' , style: TextStyle(color: Colors.white , fontSize: 20.0),)
-
-                      ],
-                    ) ,
-                    )
+                    child:SizedBox(
+                      height: 50.0,
+                      child:Center(
+                        child:  Text('Import shared sheets' , style: TextStyle(color: Colors.white , fontSize: 20.0),)
+                      )
+                      
+                     
+                  )
                    ),            
             )
           ],

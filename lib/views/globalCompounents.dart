@@ -8,23 +8,29 @@ import 'loginPage.dart';
       leading: null,
       title: Center(child: Text(title),),
       actions: <Widget>[
-        PopupMenuButton(
-          onSelected: (_){SheetsManager.googleSignIn.signOut();},
-          itemBuilder: (BuildContext context){
-            return[
-              PopupMenuItem(
-                
-               child:Row(children: <Widget>[
+        Padding(
+
+          padding: EdgeInsets.symmetric(vertical: 8.0 , horizontal: 10.0),
+          child:  RaisedButton(
+          color: Color.fromRGBO(64, 115, 96, .9),
+          child: Row(children: <Widget>[
                  Text("Log out"),
                  Icon(Icons.account_circle),
-               ],)
-               )
-
-             
-            ];
+               ],),
+          onPressed: (){
+              
+            SheetsManager.googleSignIn.signOut();
+            Navigator.pushReplacement(
+              context, 
+              MaterialPageRoute(
+                builder: (context)=> LoginPage()
+              )
+            
+            );
           },
+        ),     
         )
-        
+       
         
       ],
     );

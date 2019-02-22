@@ -15,21 +15,23 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+   bool progressActive = false;
   @override
   Widget build(BuildContext context) {
+
+   
 
     final loginButton = Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-
             Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Icon(Icons.supervisor_account , color: Colors.white, size: 200,)
           ),
 
-          Padding(
+            Padding(
               padding:EdgeInsets.symmetric(vertical: 8.0 ,horizontal: 16.0),
               child: RaisedButton(
                   elevation: 8.0,
@@ -37,19 +39,30 @@ class _LoginPageState extends State<LoginPage> {
                   textColor: Colors.white,
                   splashColor: Colors.blueGrey,
                   onPressed:() async{
-
+                    //start the circular progress indicator
+                    setState(() {
+                     this.progressActive = true; 
+                    });
                     //test connaxion then login
                     bool onValue= await NetworkManager.tryConnexion();
-                    print(onValue);
+
                         
                       if(onValue ){
                         
                        await SheetsManager.getToken();
+
+                       // stop the circular progress indicator
+                       setState(() {
+                        this.progressActive= false; 
+                       });
                        Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context)=> ImportFilesPage()
                     ));
                     }else { 
                       // no  intenet connexion
+                      setState(() {
+                        this.progressActive= false; 
+                       });
                       showDialog<String>(
                         context: context,
                         builder: (BuildContext context) => checkConnexionDialog(context)
@@ -67,6 +80,10 @@ class _LoginPageState extends State<LoginPage> {
    
               )
           ),
+          SizedBox(height: 10.0),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 0.0 ,horizontal: 20.0),
+            child:Center(child:  this.progressActive== true? CircularProgressIndicator(): null),)
 
         
         ],
