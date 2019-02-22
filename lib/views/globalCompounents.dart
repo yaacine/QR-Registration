@@ -12,7 +12,7 @@ import 'loginPage.dart';
 
           padding: EdgeInsets.symmetric(vertical: 8.0 , horizontal: 10.0),
           child:  RaisedButton(
-          color: Color.fromRGBO(64, 115, 96, .9),
+          color: Color.fromRGBO(64, 100, 96, .9),
           child: Row(children: <Widget>[
                  Text("Log out"),
                  Icon(Icons.account_circle),

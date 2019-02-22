@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../controllers/participentsSheetController.dart';
 import '../models/sheet.dart';
 import './scanPage.dart';

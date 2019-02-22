@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../controllers/participentsSheetController.dart';
 import './listFilesPage.dart';
 import 'globalCompounents.dart';
+
+
 class ImportFilesPage extends StatefulWidget {
   _ImportFilesPageState createState() => _ImportFilesPageState();
 }
@@ -11,45 +13,6 @@ class _ImportFilesPageState extends State<ImportFilesPage> {
 
 
   Widget build(BuildContext context) {
-
-    final loadingAnimation = Container(
-       child:new Center(
-        child: SizedBox(width: 300.0, height: 300.0,
-        child: DecoratedBox(
-           decoration: BoxDecoration(
-             borderRadius: BorderRadius.circular(20.0),
-             color: Color.fromRGBO(40, 80, 60, 0.5),
-             
-             
-           ),
-          child:Center(
-
-           child:Column(
-             mainAxisAlignment: MainAxisAlignment.center,
-             crossAxisAlignment: CrossAxisAlignment.center,
-             children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2.0),
-                 child:CircularProgressIndicator(strokeWidth: 4.0,
-                  ),
-                ),
-                
-                SizedBox(height: 10.0,),
-                Padding(
-                   padding: EdgeInsets.symmetric(vertical: 2.0),
-                  child: Text("Loading..." , style: TextStyle(fontSize: 15.0),),
-                )
-
-           
-             ],
-           ) 
-          ) 
-           
-         ),)
-        
-       )
-    );
-
 
     final loadFilesButton = Container(
       child: Center(
